@@ -11,13 +11,13 @@ Block::Block()
 void Print_Block()
 {
 	COORD pos;
-	for (int i = 0; i < 12; i++)
+	for (int i = 0; i < 11; i++)
 	{
 		for (int k = 0; k < 6; k++)
 		{
-			pos = { i, k };
+			pos = { k*2, i };
 			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-			cout << datas.Get_stadium[i][k];
+			cout << datas.Get_stadium[k*2][i];
 		}
 	}
 }
@@ -31,3 +31,4 @@ void Block:: Put_block(vector<char> b)
 {
 	Block::block = b;
 }
+
