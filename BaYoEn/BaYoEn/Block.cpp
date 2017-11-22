@@ -8,12 +8,12 @@ Block::Block()
 	Block::block.push_back('¡Ü');
 }
 
-void Print_Block()
+void Block::Print_Block()
 {
 	COORD pos;
 	for (int i = 0; i < 11; i++)
 	{
-		for (int k = 0; k < 6; k++)
+		for (int k = 0; k < 5; k++)
 		{
 			pos = { k*2, i };
 			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);

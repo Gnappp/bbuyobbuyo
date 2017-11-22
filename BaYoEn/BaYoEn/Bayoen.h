@@ -42,8 +42,10 @@ public:
 	void Down_Up();
 	void Down_Down();
 	void Delete_Block();
+	vector<COORD> Check_Block(COORD ,vector<COORD> , char );
 	void Auto_Down();
 	void Stack_Block();
+	void Fill_Block();
 };
 
 class Block
