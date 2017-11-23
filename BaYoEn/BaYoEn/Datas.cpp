@@ -5,24 +5,25 @@ Datas::Datas()
 	init();
 }
 
-void Datas::New_Block()//
+void Datas::New_Block()
 {
 	int sel = rand() % 2;
 	vector<int> n_b_p;
-	vector<char> b;
-	b = block.Get_block();
+	COORD pos = { 20, 21 };//
 	if (new_block_position.size() == 0)
 	{
-		stadium[6][0] = b[sel];
+		stadium[6][0] = block[sel];
 		n_b_p.push_back(6);
 		n_b_p.push_back(0);
 		new_block_position.push_back(n_b_p);
+		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);//
+		cout << "Debug Datas.New_Block : " << new_block_position.size();//
 	}
-	else
+	else if (new_block_position.size() == 1)
 	{
-		stadium[new_block_position[0][0]][0]=b[sel];
+		stadium[new_block_position[0][0]][new_block_position[0][1] - 1] = block[sel];
 		n_b_p.push_back(new_block_position[0][0]);
-		n_b_p.push_back(0);
+		n_b_p.push_back(new_block_position[0][1] - 1);
 		new_block_position.push_back(n_b_p);
 		new_block_mode = 1;
 	}
@@ -43,7 +44,13 @@ void Datas::init()
 	{
 		x_highest.push_back(0);
 	}
+	block.push_back(' ');
+	block.push_back('S');
+	block.push_back('T');
+	block.push_back('O');
 }
+
+
 
 vector<vector<char>> Datas::Get_stadium()
 {
@@ -80,7 +87,31 @@ int Datas::Get_new_block_mode()
 	return new_block_mode;
 }
 
-void Put_new_block_mode(int tmp)
+void Datas::Put_new_block_mode(int tmp)
 {
 	new_block_mode = tmp;
+}
+
+void Datas::Print_Block()
+{
+	COORD pos;
+	for (int i = 0; i < 11; i++)
+	{
+		for (int k = 0; k < 5; k++)
+		{
+			pos = { k * 2, i };
+			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+			cout << stadium[k * 2][i];
+		}
+	}
+}
+
+vector<char> Datas::Get_block()
+{
+	return block;
+}
+
+void Datas::Put_block(vector<char> b)
+{
+	block = b;
 }

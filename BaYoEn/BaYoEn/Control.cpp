@@ -1,6 +1,8 @@
 #include "Bayoen.h"
 
-Control::Control(){}
+Control::Control()
+{
+}
 void Control::Down_Left()
 {
 	char block_tmp;
@@ -8,7 +10,8 @@ void Control::Down_Left()
 	vector<vector<char>> stadium_tmp;
 	new_block_position_tmp = datas.Get_new_block_position();
 	stadium_tmp = datas.Get_stadium();
-	if (new_block_position_tmp[0][0] != 0){
+	if (new_block_position_tmp.size() != 0)
+	{
 		block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
 		stadium_tmp[new_block_position_tmp[0][0]] [new_block_position_tmp[0][1]] = ' ';
 		new_block_position_tmp[0][0] = new_block_position_tmp[0][0] - 2;
@@ -32,7 +35,7 @@ void Control::Down_Right()
 	vector<vector<char>> stadium_tmp;
 	new_block_position_tmp = datas.Get_new_block_position();
 	stadium_tmp = datas.Get_stadium();
-	if (new_block_position_tmp[0][0] != 0){
+	if (new_block_position_tmp.size() != 0){
 		block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
 		stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = ' ';
 		new_block_position_tmp[0][0] = new_block_position_tmp[0][0] + 2;
@@ -57,8 +60,8 @@ void Control::Down_Up()
 	vector<vector<char>> stadium_tmp;
 	new_block_position_tmp = datas.Get_new_block_position();
 	stadium_tmp = datas.Get_stadium();
-	if (new_block_position_tmp.size == 2){
-		switch (datas.Get_new_block_mode)
+	if (new_block_position_tmp.size() == 2){
+		switch (datas.Get_new_block_mode())
 		{
 		case 1:
 			block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
@@ -71,6 +74,7 @@ void Control::Down_Up()
 
 			datas.Put_new_block_position(new_block_position_tmp);
 			datas.Put_stadium(stadium_tmp);
+			break;
 		case 2:
 			block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
 			stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = ' ';
@@ -90,29 +94,36 @@ void Control::Down_Up()
 
 			datas.Put_new_block_position(new_block_position_tmp);
 			datas.Put_stadium(stadium_tmp);
+			break;
 		}
 	}
 }
 
 void Control::Down_Down()
 {
+	COORD pos = { 20, 22 };//
 	char block_tmp;
-	vector<vector<int>> new_block_position_tmp;
+	vector<vector<int>> new_block_position_tmp = datas.Get_new_block_position();
 	vector<int> position_swap;
-	vector<vector<char>> stadium_tmp;
-	new_block_position_tmp = datas.Get_new_block_position();
-	stadium_tmp = datas.Get_stadium();
+	vector<vector<char>> stadium_tmp = datas.Get_stadium();
 
-	block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
-	stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = ' ';
-	new_block_position_tmp[0][1] = new_block_position_tmp[0][1] + 1;
-	stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = block_tmp;
-
-	block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
-	stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
-	new_block_position_tmp[1][1] = new_block_position_tmp[1][1] + 1;
-	stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
-
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);//
+	cout << "Debug Control.Down_Down : "<<datas.Get_new_block_position().size();//
+	
+	if (new_block_position_tmp.size() != 0)
+	{
+		block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
+		stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = ' ';
+		new_block_position_tmp[0][1] = new_block_position_tmp[0][1] + 1;
+		stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = block_tmp;
+		if (new_block_position_tmp.size() == 2)
+		{
+			block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
+			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
+			new_block_position_tmp[1][1] = new_block_position_tmp[1][1] + 1;
+			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
+		}
+	}
 	datas.Put_new_block_position(new_block_position_tmp);
 	datas.Put_stadium(stadium_tmp);
 }
@@ -223,4 +234,65 @@ vector<COORD> Control::Check_Block(COORD coord,vector<COORD> coord_check,char bl
 	else
 		return coord_check;
 }
-	void Stack_Block();
+bool Control::Stack_Block()
+{
+	char block_tmp;
+	vector<int> x_highest_tmp = datas.Get_x_highest();
+	vector<vector<int>> new_block_position_tmp = datas.Get_new_block_position();
+	vector<vector<char>> stadium_tmp = datas.Get_stadium();
+	int new_block_mode = datas.Get_new_block_mode();
+	switch (new_block_mode)
+	{
+	case 1:
+		if (new_block_position_tmp[0][1] + 1 == x_highest_tmp[new_block_position_tmp[0][0] / 2])
+		{
+			x_highest_tmp[new_block_position_tmp[0][0] / 2] += 2;
+			new_block_position_tmp.clear();
+			datas.Put_new_block_position(new_block_position_tmp);
+			datas.Put_x_highest(x_highest_tmp);
+			return true;
+		}
+		else return false;
+		break;
+	case 2:
+		if (new_block_position_tmp[0][1] + 1 == x_highest_tmp[new_block_position_tmp[0][0] / 2])
+		{
+			x_highest_tmp[new_block_position_tmp[0][0] / 2] += 1;
+			block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
+			x_highest_tmp[new_block_position_tmp[1][0] / 2] += 1;
+			new_block_position_tmp[1][1] = x_highest_tmp[new_block_position_tmp[1][0] / 2];
+			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
+			new_block_position_tmp.clear();
+			datas.Put_new_block_position(new_block_position_tmp);
+			datas.Put_x_highest(x_highest_tmp);
+			datas.Put_stadium(stadium_tmp);
+			return true;
+		}
+		else if (new_block_position_tmp[1][1] + 1 == x_highest_tmp[new_block_position_tmp[1][0] / 2])
+		{
+			x_highest_tmp[new_block_position_tmp[1][0] / 2] += 1;
+			block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
+			x_highest_tmp[new_block_position_tmp[0][0] / 2] += 1;
+			new_block_position_tmp[0][1] = x_highest_tmp[new_block_position_tmp[0][0] / 2];
+			stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = block_tmp;
+			new_block_position_tmp.clear();
+			datas.Put_new_block_position(new_block_position_tmp);
+			datas.Put_x_highest(x_highest_tmp);
+			datas.Put_stadium(stadium_tmp);
+			return true;
+		}
+		else return false;
+		break;
+	default:
+		break;
+	}
+}
+
+Datas Control::Get_Datas()
+{
+	return datas;
+}
+void Control::Put_Datas(Datas data)
+{
+	datas = data;
+}
