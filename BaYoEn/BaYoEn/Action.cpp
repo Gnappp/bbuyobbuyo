@@ -1,20 +1,18 @@
 #include "Bayoen.h"
 
 Action::Action()
-{}
+{
+	init();
+}
 
 void Action::Start_Game()
 {
-	COORD pos = { 20 , 20 };
+	
 	while (1)
 	{
 		if (datas.Get_new_block_position().size() < 2)
 		{
-				datas.New_Block();
-				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);//
-				cout << "Debug Action : " << datas.Get_new_block_position().size();//
-				datas = control.Get_Datas();
-				datas.Print_Block();
+			Create_Blcok();
 		}
 		for (int i = 0; i < 20; i++)
 		{
@@ -24,16 +22,49 @@ void Action::Start_Game()
 			if (GetKeyState(VK_RIGHT) & 0x0800)
 				control.Down_Right();
 			if (GetKeyState(VK_DOWN) & 0x0800)
-				control.Down_Down();
+				break;
 			if (GetKeyState(VK_UP) & 0x0800)
 				control.Down_Up();
-			
-			
 			datas.Print_Block();
 			Sleep(50);
 		}
-		//if (datas.Get_new_block_position().size() <0)
-		control.Down_Down();
 		datas.Print_Block();
+		control.Stack_Block();
+		if (datas.Get_new_block_position().size()>0)
+			control.Down_Down();
+		datas.Print_Block();
+	}
+}
+
+void Action::Create_Blcok()
+{
+	COORD pos = { 20, 20 };
+	datas.New_Block();
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);//
+	cout << "Debug Action : " << datas.Get_new_block_position().size();//
+	datas.Print_Block();
+}
+
+void Action::init()
+{
+	COORD pos;
+	for (int i = 0; i < 13; i++){
+		if (i % 2 == 0){
+			pos = { i, 11 };
+			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+			cout << "¦¬¦¬";
+		}
+	}
+	for (int i = 0; i < 11 + 1; i++){
+		if (11 != i){
+			pos = { 13, i };
+			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+			cout << "¦­";
+		}
+		if (11 == i){
+			pos = { 13, i };
+			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+			cout << "¦°";
+		}
 	}
 }

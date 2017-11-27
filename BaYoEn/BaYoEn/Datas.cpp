@@ -7,7 +7,8 @@ Datas::Datas()
 
 void Datas::New_Block()
 {
-	int sel = rand() % 2;
+	srand(time(NULL));
+	int sel = rand() % 3;
 	vector<int> n_b_p;
 	COORD pos = { 20, 21 };//
 	if (new_block_position.size() == 0)
@@ -30,27 +31,32 @@ void Datas::New_Block()
 }
 void Datas::init()
 {
+	x_limit = 7;
+	y_limit = 11;
 	vector<char> tmp;
-	for (int i = 0; i < 11; i++)
+	for (int i = 0; i < x_limit*2-1; i++)
 	{
-		for (int k = 0; k < 12; k++)
+		for (int k = 0; k < y_limit ; k++)
 		{
 			tmp.push_back(' ');
 		}
 		stadium.push_back(tmp);
 		tmp.clear();
 	}
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < x_limit; i++)
 	{
-		x_highest.push_back(0);
+		x_highest.push_back(11);
 	}
-	block.push_back(' ');
 	block.push_back('S');
 	block.push_back('T');
 	block.push_back('O');
 }
 
-
+ Datas& Datas::GetInctance()
+{
+	static Datas datas;
+	return datas;
+}
 
 vector<vector<char>> Datas::Get_stadium()
 {
@@ -92,26 +98,27 @@ void Datas::Put_new_block_mode(int tmp)
 	new_block_mode = tmp;
 }
 
+int Datas::Get_x_limit()
+{
+	return x_limit;
+}
+int Datas::Get_y_limit()
+{
+	return y_limit;
+}
+
 void Datas::Print_Block()
 {
 	COORD pos;
-	for (int i = 0; i < 11; i++)
+	for (int i = 0; i < y_limit; i++)
 	{
-		for (int k = 0; k < 5; k++)
+		for (int k = 0; k < x_limit; k++)
 		{
 			pos = { k * 2, i };
 			SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 			cout << stadium[k * 2][i];
+			
 		}
 	}
 }
 
-vector<char> Datas::Get_block()
-{
-	return block;
-}
-
-void Datas::Put_block(vector<char> b)
-{
-	block = b;
-}

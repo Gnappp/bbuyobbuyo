@@ -17,9 +17,12 @@ private:
 	vector<vector<char>> stadium;//
 	vector<vector<int>> new_block_position;//new_block_position[n][m] n=0 : first, n=1 : second, m=0 : x, m=1 : y
 	vector<int> x_highest;//
+	int x_limit;
+	int y_limit;
 	int new_block_mode;
-public:
 	Datas();
+public:
+	static Datas& GetInctance();
 	void New_Block(); //
 	void init();
 	vector<vector<char>> Get_stadium();
@@ -30,15 +33,18 @@ public:
 	void Put_x_highest(vector<int> );
 	int Get_new_block_mode();
 	void Put_new_block_mode(int);
+	int Get_x_limit();
+	int Get_y_limit();
 	void Print_Block();
-	vector<char> Get_block();
-	void Put_block(vector<char>);
+	
 };
 
 class Control
 {
 private:
-	Datas datas;
+	Datas& datas=datas.GetInctance();
+	int x_limit;
+	int y_limit;
 public:
 	Control();
 	void Down_Left();
@@ -50,8 +56,6 @@ public:
 	void Auto_Down();
 	bool Stack_Block();
 	void Fill_Block();
-	Datas Get_Datas();
-	void Put_Datas(Datas);
 };
 
 
@@ -59,10 +63,12 @@ public:
 class Action
 {
 private:
-	Datas datas;
+	Datas& datas = datas.GetInctance();
 	Control control;
 public:
 	Action();
 	void Start_Game();
+	void init();
+	void Create_Blcok();
 };
 #endif

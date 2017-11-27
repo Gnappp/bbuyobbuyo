@@ -2,6 +2,8 @@
 
 Control::Control()
 {
+	x_limit = datas.Get_x_limit();
+	y_limit = datas.Get_y_limit();
 }
 void Control::Down_Left()
 {
@@ -10,19 +12,23 @@ void Control::Down_Left()
 	vector<vector<char>> stadium_tmp;
 	new_block_position_tmp = datas.Get_new_block_position();
 	stadium_tmp = datas.Get_stadium();
-	if (new_block_position_tmp.size() != 0)
+	if (new_block_position_tmp[0][0] != 0 && stadium_tmp[new_block_position_tmp[0][0] - 2][new_block_position_tmp[0][1]] == ' ')
 	{
-		block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
-		stadium_tmp[new_block_position_tmp[0][0]] [new_block_position_tmp[0][1]] = ' ';
-		new_block_position_tmp[0][0] = new_block_position_tmp[0][0] - 2;
-		stadium_tmp[new_block_position_tmp[0][0]] [new_block_position_tmp[0][1]] = block_tmp;
-		if (new_block_position_tmp.size() == 2)
+		if (new_block_position_tmp.size() != 0)
 		{
-			block_tmp = stadium_tmp[new_block_position_tmp[1][0]] [new_block_position_tmp[1][1]];
-			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
-			new_block_position_tmp[1][0] = new_block_position_tmp[1][0] - 2;
-			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
+			block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
+			stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = ' ';
+			new_block_position_tmp[0][0] = new_block_position_tmp[0][0] - 2;
+			stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = block_tmp;
+			if (new_block_position_tmp.size() == 2)
+			{
+				block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
+				stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
+				new_block_position_tmp[1][0] = new_block_position_tmp[1][0] - 2;
+				stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
+			}
 		}
+
 	}
 	datas.Put_new_block_position(new_block_position_tmp);
 	datas.Put_stadium(stadium_tmp);
@@ -35,17 +41,46 @@ void Control::Down_Right()
 	vector<vector<char>> stadium_tmp;
 	new_block_position_tmp = datas.Get_new_block_position();
 	stadium_tmp = datas.Get_stadium();
-	if (new_block_position_tmp.size() != 0){
-		block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
-		stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = ' ';
-		new_block_position_tmp[0][0] = new_block_position_tmp[0][0] + 2;
-		stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = block_tmp;
-		if (new_block_position_tmp.size() == 2)
+	if (datas.Get_new_block_mode() == 2)
+	{
+		if (new_block_position_tmp[1][0] < (x_limit * 2) - 2 && stadium_tmp[new_block_position_tmp[1][0] + 2][new_block_position_tmp[1][1]] == ' ')
 		{
-			block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
-			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
-			new_block_position_tmp[1][0] = new_block_position_tmp[1][0] + 2;
-			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
+			if (new_block_position_tmp.size() != 0)
+			{
+				if (new_block_position_tmp.size() == 2)
+				{
+					block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
+					stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
+					new_block_position_tmp[1][0] = new_block_position_tmp[1][0] + 2;
+					stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
+				}
+				block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
+				stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = ' ';
+				new_block_position_tmp[0][0] = new_block_position_tmp[0][0] + 2;
+				stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = block_tmp;
+			}
+
+		}
+	}
+	else //new_block_position.size()가 1일때는 움직이지 않고 new_block_mode가 2일땐 중심이 new_block_mode[1][0]이기때문에 나눴다.
+	{
+		if (new_block_position_tmp[0][0] < (x_limit * 2) - 2 && stadium_tmp[new_block_position_tmp[0][0] + 2][new_block_position_tmp[0][1]] == ' ')
+		{
+			if (new_block_position_tmp.size() != 0)
+			{
+				if (new_block_position_tmp.size() == 2)
+				{
+					block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
+					stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
+					new_block_position_tmp[1][0] = new_block_position_tmp[1][0] + 2;
+					stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
+				}
+				block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
+				stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = ' ';
+				new_block_position_tmp[0][0] = new_block_position_tmp[0][0] + 2;
+				stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = block_tmp;
+			}
+
 		}
 	}
 	datas.Put_new_block_position(new_block_position_tmp);
@@ -60,56 +95,62 @@ void Control::Down_Up()
 	vector<vector<char>> stadium_tmp;
 	new_block_position_tmp = datas.Get_new_block_position();
 	stadium_tmp = datas.Get_stadium();
-	if (new_block_position_tmp.size() == 2){
-		switch (datas.Get_new_block_mode())
+	if (new_block_position_tmp[0][0] < (x_limit * 2) - 2 || new_block_position_tmp[1][0] < (x_limit * 2) - 2)
+	{
+
+		if (new_block_position_tmp.size() == 2)
 		{
-		case 1:
-			block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
-			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
-			new_block_position_tmp[1][0] = new_block_position_tmp[1][0] + 2;
-			new_block_position_tmp[1][1] = new_block_position_tmp[1][1] + 1;
-			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
+			switch (datas.Get_new_block_mode())
+			{
+			case 1:
+				if (stadium_tmp[new_block_position_tmp[0][0] + 2][new_block_position_tmp[0][1]] == ' ')
+				{
+					block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
+					stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
+					new_block_position_tmp[1][0] = new_block_position_tmp[1][0] + 2;
+					new_block_position_tmp[1][1] = new_block_position_tmp[1][1] + 1;
+					stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
 
-			datas.Put_new_block_mode(2);
+					datas.Put_new_block_mode(2);
 
-			datas.Put_new_block_position(new_block_position_tmp);
-			datas.Put_stadium(stadium_tmp);
-			break;
-		case 2:
-			block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
-			stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = ' ';
-			new_block_position_tmp[0][1] = new_block_position_tmp[0][1] - 1;
-			stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = block_tmp;
+					datas.Put_new_block_position(new_block_position_tmp);
+					datas.Put_stadium(stadium_tmp);
+				}
+				break;
+			case 2:
+				block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
+				stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = ' ';
+				new_block_position_tmp[0][1] = new_block_position_tmp[0][1] - 1;
+				stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = block_tmp;
 
-			block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
-			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
-			new_block_position_tmp[1][0] = new_block_position_tmp[1][0] - 2;
-			stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = block_tmp;
+				block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
+				stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
+				new_block_position_tmp[1][0] = new_block_position_tmp[1][0] - 2;
+				stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
 
-			position_swap = new_block_position_tmp[0];
-			new_block_position_tmp[0] = new_block_position_tmp[1];
-			new_block_position_tmp[1] = position_swap;
+				position_swap = new_block_position_tmp[0];
+				new_block_position_tmp[0] = new_block_position_tmp[1];
+				new_block_position_tmp[1] = position_swap;
 
-			datas.Put_new_block_mode(1);
+				datas.Put_new_block_mode(1);
 
-			datas.Put_new_block_position(new_block_position_tmp);
-			datas.Put_stadium(stadium_tmp);
-			break;
+				datas.Put_new_block_position(new_block_position_tmp);
+				datas.Put_stadium(stadium_tmp);
+				break;
+			}
 		}
 	}
 }
 
 void Control::Down_Down()
 {
-	COORD pos = { 20, 22 };//
 	char block_tmp;
 	vector<vector<int>> new_block_position_tmp = datas.Get_new_block_position();
 	vector<int> position_swap;
 	vector<vector<char>> stadium_tmp = datas.Get_stadium();
 
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);//
-	cout << "Debug Control.Down_Down : "<<datas.Get_new_block_position().size();//
 	
+
 	if (new_block_position_tmp.size() != 0)
 	{
 		block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
@@ -133,7 +174,7 @@ void Control::Delete_Block()
 	vector<vector<char>> stadium_tmp = datas.Get_stadium();
 	vector<COORD> check;
 	vector<int> x_highest_tmp = datas.Get_x_highest();
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < 7; i++)
 	{
 		for (int k = 0; k < x_highest_tmp[i]; k++)
 		{
@@ -234,6 +275,7 @@ vector<COORD> Control::Check_Block(COORD coord,vector<COORD> coord_check,char bl
 	else
 		return coord_check;
 }
+
 bool Control::Stack_Block()
 {
 	char block_tmp;
@@ -246,7 +288,7 @@ bool Control::Stack_Block()
 	case 1:
 		if (new_block_position_tmp[0][1] + 1 == x_highest_tmp[new_block_position_tmp[0][0] / 2])
 		{
-			x_highest_tmp[new_block_position_tmp[0][0] / 2] += 2;
+			x_highest_tmp[new_block_position_tmp[0][0] / 2] -= 2;
 			new_block_position_tmp.clear();
 			datas.Put_new_block_position(new_block_position_tmp);
 			datas.Put_x_highest(x_highest_tmp);
@@ -257,42 +299,38 @@ bool Control::Stack_Block()
 	case 2:
 		if (new_block_position_tmp[0][1] + 1 == x_highest_tmp[new_block_position_tmp[0][0] / 2])
 		{
-			x_highest_tmp[new_block_position_tmp[0][0] / 2] += 1;
+			x_highest_tmp[new_block_position_tmp[0][0] / 2] -= 1;
 			block_tmp = stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]];
-			x_highest_tmp[new_block_position_tmp[1][0] / 2] += 1;
+			x_highest_tmp[new_block_position_tmp[1][0] / 2] -= 1;
+			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = ' ';
 			new_block_position_tmp[1][1] = x_highest_tmp[new_block_position_tmp[1][0] / 2];
 			stadium_tmp[new_block_position_tmp[1][0]][new_block_position_tmp[1][1]] = block_tmp;
 			new_block_position_tmp.clear();
 			datas.Put_new_block_position(new_block_position_tmp);
 			datas.Put_x_highest(x_highest_tmp);
+			datas.Put_new_block_mode(1);
 			datas.Put_stadium(stadium_tmp);
 			return true;
 		}
 		else if (new_block_position_tmp[1][1] + 1 == x_highest_tmp[new_block_position_tmp[1][0] / 2])
 		{
-			x_highest_tmp[new_block_position_tmp[1][0] / 2] += 1;
+			x_highest_tmp[new_block_position_tmp[1][0] / 2] -= 1;
 			block_tmp = stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]];
-			x_highest_tmp[new_block_position_tmp[0][0] / 2] += 1;
+			x_highest_tmp[new_block_position_tmp[0][0] / 2] -= 1;
+			stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = ' ';
 			new_block_position_tmp[0][1] = x_highest_tmp[new_block_position_tmp[0][0] / 2];
 			stadium_tmp[new_block_position_tmp[0][0]][new_block_position_tmp[0][1]] = block_tmp;
 			new_block_position_tmp.clear();
 			datas.Put_new_block_position(new_block_position_tmp);
 			datas.Put_x_highest(x_highest_tmp);
+			datas.Put_new_block_mode(1);
 			datas.Put_stadium(stadium_tmp);
 			return true;
 		}
 		else return false;
 		break;
 	default:
-		break;
+		return false;
 	}
 }
 
-Datas Control::Get_Datas()
-{
-	return datas;
-}
-void Control::Put_Datas(Datas data)
-{
-	datas = data;
-}
