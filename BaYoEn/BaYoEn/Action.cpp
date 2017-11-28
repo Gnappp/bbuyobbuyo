@@ -30,7 +30,8 @@ void Action::Start_Game()
 		}
 		datas.Print_Block();
 		control.Stack_Block();
-		if (datas.Get_new_block_position().size()>0)
+		datas.Print_Block();
+		//if (datas.Get_new_block_position().size()>0)
 			control.Down_Down();
 		datas.Print_Block();
 	}
@@ -38,10 +39,7 @@ void Action::Start_Game()
 
 void Action::Create_Blcok()
 {
-	COORD pos = { 20, 20 };
 	datas.New_Block();
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);//
-	cout << "Debug Action : " << datas.Get_new_block_position().size();//
 	datas.Print_Block();
 }
 

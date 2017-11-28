@@ -171,108 +171,150 @@ void Control::Down_Down()
 
 void Control::Delete_Block()
 {
+	COORD pos = { 20, 20 };
 	vector<vector<char>> stadium_tmp = datas.Get_stadium();
 	vector<COORD> check;
 	vector<int> x_highest_tmp = datas.Get_x_highest();
-	for (int i = 0; i < 7; i++)
+	
+	for (int i = x_limit-1; i > 0; i--)
 	{
-		for (int k = 0; k < x_highest_tmp[i]; k++)
+		
+		for (int k = y_limit-1; k >= x_highest_tmp[i]; k--)
 		{
-			COORD coord = { i, k };
-			check = Check_Block(coord, check, stadium_tmp[coord.X][coord.Y]);
-			if (check.size()>3)
+			COORD coord = { i*2, k };
+			
+			if (stadium_tmp[i * 2][k] != ' ')
 			{
-				//check에 있는 좌표들 공백처리하기
-				for (int i = 0; i < check.size(); i++);
+				check = Check_Block(coord, check, stadium_tmp[i*2][k]);
+				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);//
+				cout << "Debug Delete_Block  : " << check.size();//
+				if (check.size()>3)
 				{
-					stadium_tmp[check[i].X][check[i].Y] = ' ';
+					
+					//check에 있는 좌표들 공백처리하기
+					for (int j = 0; j < check.size(); j++)
+					{
+						stadium_tmp[check[j].X][check[j].Y] = ' ';
+					}
+					datas.Put_stadium(stadium_tmp);
+					datas.Print_Block();
+					Fill_Block(check);
+				
+					i = 0;
+					k = 0;
+					break;
 				}
-				Fill_Block();
-				i = 0;
-				k = 0;
-				break;
 			}
+			check.clear();
 		}
 	}
 }
 
-void Control::Fill_Block()
+void Control::Fill_Block(vector<COORD> check)
 {
+	COORD pos = { 20, 22 };
 	vector<vector<char>> stadium_tmp = datas.Get_stadium();
 	vector<int> x_highest_tmp = datas.Get_x_highest();
 	vector<int> empty_check; //빈공간 x좌표
 	vector<char> char_tmp; // empty_check의 x좌표의 문자열 넣기
 	vector<vector<char>> change_char; // char_tmp를 empty_check만큼 넣기
-	for (int i = 0; i < x_highest_tmp.size(); i++) //빈 공간의 x좌표 찾기
+	vector<vector<char>> change_char_high;
+
+	for (int i = 0; i < check.size(); i++)
 	{
-		for (int k = 0; k < x_highest_tmp[i]; k++)
-		{
-			if (stadium_tmp[i * 2][k] == ' ')
-			{
-				empty_check.push_back(i);
-				break;
-			}
-		}
+		empty_check.push_back(check[i].X);
 	}
+	
+	sort(empty_check.begin(), empty_check.end());
+	empty_check.erase(unique(empty_check.begin(), empty_check.end()), empty_check.end());
 
 	for (int i = 0; i < empty_check.size(); i++) //빈공간 제외하고 문자열 넣기
 	{
-		for (int k = 0; k < x_highest_tmp[i]; k++)
+		for (int k = 0; k < y_limit ; k++)
 		{
-			if (stadium_tmp[empty_check[i]*2][k] != ' ')
+			if (stadium_tmp[empty_check[i]][k] != ' ')
 			{
-				char_tmp.push_back(stadium_tmp[empty_check[i] * 2][k]);
+				char_tmp.push_back(stadium_tmp[empty_check[i]][k]);
 			}
 		}
 		change_char.push_back(char_tmp);
+		char_tmp.clear();
 	}
+	
+	change_char_high = change_char;
+
+	for (int i = 0; i < change_char.size(); i++)
+	{
+		char_tmp.clear();
+		for (int k = change_char[i].size(); k < y_limit; k++)
+		{
+			char_tmp.push_back(' ');
+		}
+		for (int k = 0; k < change_char[i].size(); k++)
+		{
+			char_tmp.push_back(change_char[i][k]);
+		}
+		change_char[i] = char_tmp;
+	}
+	
 
 	for (int i = 0; i < empty_check.size(); i++) //빈공간 x좌표를 이용하여 stadium을 수정한다.
 	{
-			stadium_tmp[empty_check[i * 2]] = change_char[i];
-			x_highest_tmp[empty_check[i]] = change_char[i].size();
+			stadium_tmp[empty_check[i]] = change_char[i];
+			x_highest_tmp[empty_check[i]/2] = 11 - change_char_high[i].size();
 	}
+	
 	datas.Put_stadium(stadium_tmp);
 	datas.Put_x_highest(x_highest_tmp);
 }
 
 vector<COORD> Control::Check_Block(COORD coord,vector<COORD> coord_check,char block)
 {
+	COORD pos = { 20, 23 };
 	vector<vector<char>> stadium_tmp = datas.Get_stadium();
 	COORD coord_tmp;
+	vector<int> x_highest = datas.Get_x_highest();
+	
 	for (int i = 0; i < coord_check.size(); i++)
 	{
-		if (coord.X == coord_check[i].Y && coord.Y == coord_check[i].Y)
+		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);//
+	cout << "Debug Check_Block k : " << coord_check.size();//
+		if (coord_check[i].X == coord.X && coord_check[i].Y == coord.Y)
 		{
 			return coord_check;
 		}
 	}
-	if (stadium_tmp[coord.X][coord.Y] == block)
+	if (stadium_tmp[coord.X][coord.Y] != ' ' && stadium_tmp[coord.X][coord.Y] == block)
 	{
 		coord_check.push_back(coord);
 		coord_tmp = coord;
-		if (coord_tmp.X < 10) //right
+		if (coord.X < (x_limit-1)*2) //right
 		{
 			coord_tmp.X += 2;
 			coord_check = Check_Block(coord_tmp, coord_check, block);
+			coord_tmp = coord;
 		}
-		if (coord_tmp.X > 0) //left
+		if (coord.X > 0) //left
 		{
 			coord_tmp.X -= 2;
 			coord_check = Check_Block(coord_tmp, coord_check, block);
+			coord_tmp = coord;
 		}
-		if (coord_tmp.Y < 11)
+		if (coord.Y < y_limit-1)
 		{
 			coord_tmp.Y += 1;
 			coord_check = Check_Block(coord_tmp, coord_check, block);
+			coord_tmp = coord;
 		}
-		if (coord_tmp.Y > 0)
+		if (coord.Y > 0)
 		{
 			coord_tmp.Y -= 1;
 			coord_check = Check_Block(coord_tmp, coord_check, block);
+			coord_tmp = coord;
 		}
+		return coord_check;
 	}
-	else
+	else 
 		return coord_check;
 }
 
@@ -292,6 +334,7 @@ bool Control::Stack_Block()
 			new_block_position_tmp.clear();
 			datas.Put_new_block_position(new_block_position_tmp);
 			datas.Put_x_highest(x_highest_tmp);
+			Delete_Block();
 			return true;
 		}
 		else return false;
@@ -310,6 +353,7 @@ bool Control::Stack_Block()
 			datas.Put_x_highest(x_highest_tmp);
 			datas.Put_new_block_mode(1);
 			datas.Put_stadium(stadium_tmp);
+			Delete_Block();
 			return true;
 		}
 		else if (new_block_position_tmp[1][1] + 1 == x_highest_tmp[new_block_position_tmp[1][0] / 2])
@@ -325,6 +369,7 @@ bool Control::Stack_Block()
 			datas.Put_x_highest(x_highest_tmp);
 			datas.Put_new_block_mode(1);
 			datas.Put_stadium(stadium_tmp);
+			Delete_Block();
 			return true;
 		}
 		else return false;

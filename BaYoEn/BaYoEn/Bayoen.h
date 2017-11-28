@@ -6,6 +6,7 @@
 #include<vector>
 #include<ctime>
 #include<cstdlib>
+#include<algorithm>
 
 using namespace std;
 
@@ -55,7 +56,7 @@ public:
 	vector<COORD> Check_Block(COORD ,vector<COORD> , char );
 	void Auto_Down();
 	bool Stack_Block();
-	void Fill_Block();
+	void Fill_Block(vector<COORD> check);
 };
 
 
