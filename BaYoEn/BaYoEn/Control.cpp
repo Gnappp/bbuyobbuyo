@@ -171,23 +171,19 @@ void Control::Down_Down()
 
 void Control::Delete_Block()
 {
-	COORD pos = { 20, 20 };
 	vector<vector<char>> stadium_tmp = datas.Get_stadium();
 	vector<COORD> check;
 	vector<int> x_highest_tmp = datas.Get_x_highest();
 	
-	for (int i = x_limit-1; i > 0; i--)
+	for (int i = x_limit-1; i >= 0; i--)
 	{
-		
 		for (int k = y_limit-1; k >= x_highest_tmp[i]; k--)
 		{
 			COORD coord = { i*2, k };
-			
+			check.clear();
 			if (stadium_tmp[i * 2][k] != ' ')
 			{
 				check = Check_Block(coord, check, stadium_tmp[i*2][k]);
-				SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);//
-				cout << "Debug Delete_Block  : " << check.size();//
 				if (check.size()>3)
 				{
 					
@@ -197,15 +193,18 @@ void Control::Delete_Block()
 						stadium_tmp[check[j].X][check[j].Y] = ' ';
 					}
 					datas.Put_stadium(stadium_tmp);
+					
 					datas.Print_Block();
 					Fill_Block(check);
-				
-					i = 0;
-					k = 0;
+					x_highest_tmp = datas.Get_x_highest();
+					Sleep(150);
+					stadium_tmp = datas.Get_stadium();
+					datas.Print_Block();
+					i = x_limit - 1;
+					k = y_limit - 1;
 					break;
 				}
 			}
-			check.clear();
 		}
 	}
 }
@@ -353,6 +352,7 @@ bool Control::Stack_Block()
 			datas.Put_x_highest(x_highest_tmp);
 			datas.Put_new_block_mode(1);
 			datas.Put_stadium(stadium_tmp);
+			datas.Print_Block();
 			Delete_Block();
 			return true;
 		}
@@ -369,6 +369,7 @@ bool Control::Stack_Block()
 			datas.Put_x_highest(x_highest_tmp);
 			datas.Put_new_block_mode(1);
 			datas.Put_stadium(stadium_tmp);
+			datas.Print_Block();
 			Delete_Block();
 			return true;
 		}
